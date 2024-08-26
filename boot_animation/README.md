@@ -9,7 +9,8 @@ PRODUCT_COPY_FILES += \
 # Case 2: 
 - create the myfile.mk
 
-![alt text](/image/boot.PNG)
+![alt text](image/boot.PNG)
 
 - include the myfile.mk in imx8mq.evk
-![alt text](/image/add.PNG)
+
+![alt text](image/add.PNG)
