@@ -8,6 +8,6 @@
         packages/services/Car/car_product/bootanimations/my_file_boot.zip:system/media/bootanimation.zip
 # Case 2: 
     - create the myfile.mk
-        ![alt text](image/boot aimation.PNG)
+        ![alt text](/image/boot aimation.PNG)
     - include the myfile.mk in imx8mq.evk
-        ![alt text](image/add.PNG)
+        ![alt text](/image/add.PNG)
