@@ -61,3 +61,10 @@ ANDROID EMBEDDED
 		$ source build/envsetup.sh
 		$ lunch evk_8mq-userdebug
 		$ ./imx-make.sh -j12
+	
+3. flash the hardware
+	$ cd android_build
+	$ source build/envsetup.sh
+	$ lunch evk_8mq-userdebug
+	$ cd out/target/product/evk_8mq
+	$ sudo ./uuu_imx_android_flash.sh -f imx8mq -a -e 
