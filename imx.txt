@@ -1,0 +1,63 @@
+ANDROID EMBEDDED
+1. Download và cái đặt môi trường IM.X
+
+	step 1. Configure the git
+		git config --global user.name "First Last"
+		git config --global user.email "first.last@company.com"
+	
+	step 2. install package lib of android
+		sudo apt-get install uuid uuid-dev zlib1g-dev liblz-dev liblzo2-2 liblzo2-dev lzop git curl u-boot-tools mtd-utils \
+		android-sdk-libsparse-utils device-tree-compiler gdisk m4 bison flex make libssl-dev gcc-multilib libgnutls28-dev \
+		swig liblz4-tool libdw-dev dwarves bc cpio tar lz4 rsync ninja-build clang libelf-dev build-essential libncurses5
+	
+	step 3. download and unpacking the Android release package 
+	link : https://www.nxp.com/design/design-center/software/embedded-software/i-mx-software/android-os-for-i-mx-applications-processors:IMXANDROID
+		$ tar xzvf imx-android-14.0.0_2.0.0.tar.gz
+		
+	step 4 : Download the tool chain for the AArch32 and AArch64 on
+	https://developer.arm.com/downloads/-/armgnu-toolchain-downloads page
+		$ sudo tar -xvJf arm-gnu-toolchain-12.3.rel1-x86_64-aarch64-none-linuxgnu.tar.xz -C /opt
+
+2. Build the Android Platform for IM.X
+
+	step 1: To generate the IM.X android 
+		$ mkdir ~/bin $ curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo 
+		$ chmod a+x ~/bin/repo 
+		$ export PATH=${PATH}:~/bin 
+		$ source ~/imx-android-14.0.0_2.0.0/imx_android_setup.sh 
+		$ export MY_ANDROID=`pwd`
+		
+	step 2: Set the external clang,kernel-build-tools, rust and clang-tools tools for kernel building.
+		$ sudo git clone -b main-kernel-build-2024 --single-branch --depth 1 \
+		https://android.googlesource.com/platform/prebuilts/clang/host/ 
+		linux-x86 opt/prebuilt-android-clang 
+		$ cd /opt/prebuilt-android-clang 
+		$ sudo git fetch origin 3bd47139ac0e3593d4707ac0eeb2d45aa7411b67 
+		$ sudo git checkout 3bd47139ac0e3593d4707ac0eeb2d45aa7411b67 
+		$ export CLANG_PATH=/opt/prebuilt-android-clang 
+		$ export LIBCLANG_PATH=/opt/prebuilt-android-clang/clang-r510928/lib 
+		$ sudo git clone -b main-kernel-build-2024 --single-branch --depth 1 \            
+		https://android.googlesource.com/kernel/prebuilts/build-tools /opt/ prebuilt-android-kernel-build-tools 
+		$ cd /opt/prebuilt-android-kernel-build-tools 
+		$ sudo git fetch origin ae85d23af20f61220b114fc3f7bb6f77cc140365 
+		$ sudo git checkout ae85d23af20f61220b114fc3f7bb6f77cc140365 
+		$ export PATH=/opt/prebuilt-android-kernel-build-tools/linux-x86/bin:$PATH 
+		$sudo git clone -b main-kernel-build-2024 --single-branch --depth 1 \               
+		https://android.googlesource.com/platform/prebuilts/rust /opt/ prebuilt-android-rust 
+		$ cd /opt/prebuilt-android-rust sudo git fetch origin 442511af884f074018466f85b4daadd4b0ac0050 
+		$ sudo git checkout 442511af884f074018466f85b4daadd4b0ac0050 
+		$ export PATH=/opt/prebuilt-android-rust/linux-x86/1.73.0b/bin:$PATH 
+		$ sudo git clone -b main-kernel-build-2024 --single-branch --depth 1 \              
+		https://android.googlesource.com/platform/prebuilts/clang-tools / opt/prebuilt-android-clang-tools 
+		$ cd /opt/prebuilt-android-clang-tools sudo git fetch origin 1634c6a556d1f2c24897bf74156c6449486e8941 
+		$ sudo git checkout 1634c6a556d1f2c24897bf74156c6449486e8941 
+		$export PATH=/opt/prebuilt-android-clang-tools/linux-x86/bin:$PATH
+		
+	step 3: Export the toolchain
+		$ export AARCH64_GCC_CROSS_COMPILE=/opt/arm-gnu-toolchain-12.3.rel1x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-
+	
+	step 4: Build
+		$ cd android_build
+		$ source build/envsetup.sh
+		$ lunch evk_8mq-userdebug
+		$ ./imx-make.sh -j12
